@@ -45,31 +45,70 @@ function clearForm() {                                                          
 }
 
 function clearCartList() {                                                      // Išvalo Krepšelio lentelę ir parodo pranešimą, kad prekių nerasta.
-    cartList.innerHTML = '<tr><td colspan="3">Nėra surastų prekių.</td></tr>';      
-}
+    while (cartList.firstChild) {
+        cartList.removeChild(cartList.firstChild);
+    }
+    
+    // Sukuriamas "Nėra surastų prekių" pranešimas naudojant createElement
+    const row = document.createElement('tr');
+    const cell = document.createElement('td');
+    cell.textContent = 'Nėra surastų prekių.';
+    cell.setAttribute('colspan', '3'); 
+    row.appendChild(cell);
+    cartList.appendChild(row);
+}     
+
 
 // --- Inventory Atvaizdavimas ---  
 
 function renderInventory() {                                                    // Nuskaito visą prekių masyvą.
     const inventory = getInventory();
-    inventoryList.innerHTML = ''; 
 
-    if (inventory.length === 0) {                                               // Tikrina, ar sąrašas yra tuščias.
-        inventoryList.innerHTML = '<tr><td colspan="4">Sąrašas yra tuščias.</td></tr>';
+                                                                                // Tikrina ar sąrašas yra tuščias.
+   while (inventoryList.firstChild) {
+        inventoryList.removeChild(inventoryList.firstChild);
+    }
+
+    if (inventory.length === 0) {
+         // Sukuriamas "Sąrašas yra tuščias" pranešimas naudojant createElement
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.textContent = 'Sąrašas yra tuščias.';
+        cell.setAttribute('colspan', '4');
+        row.appendChild(cell);
+        inventoryList.appendChild(row);
         return;
     }
 
-    inventory.forEach(item => {                                                 // Ciklas per kiekvieną prekę, atvaizduojant ją lentelėje.
-        const row = inventoryList.insertRow();
-        row.insertCell().textContent = item.id;
-        row.insertCell().textContent = item.name;
-        row.insertCell().textContent = item.quantity;
-        row.insertCell().textContent = "Pasirinkti";                            // Vizualinis veiksmo indikatorius, leidžiantis pasirinkti produktą.
+        inventory.forEach(item => {
+        const row = document.createElement('tr');                               
         
+        // ID
+        let cell = document.createElement('td');
+        cell.textContent = item.id;
+        row.appendChild(cell);
+
+        // Name
+        cell = document.createElement('td');
+        cell.textContent = item.name;
+        row.appendChild(cell);
+        
+        // Quantity
+        cell = document.createElement('td');
+        cell.textContent = item.quantity;
+        row.appendChild(cell);
+        
+        // Veiksmas
+        cell = document.createElement('td');
+        cell.textContent = "Pasirinkti";
+        row.appendChild(cell);
         // Paspaudus eilutę, užpildoma forma koregavimui
-        row.onclick = () => selectItemForEdit(item.id); 
+         row.onclick = () => selectItemForEdit(item.id); 
+        
+        inventoryList.appendChild(row);
     });
-}
+}        
+
 
 //5.1 tęsinys
 // --- Prekės pasirinkimas ---
@@ -187,12 +226,29 @@ function handleInsertNew() {                                              // "In
 
 // --- 2. Paieška ir Krepšelio Atvaizdavimas ---
 
-function renderCartItem(item) {                                       // Atvaizduoja rastą prekę Krepšelio lentelėje.
-    cartList.innerHTML = '';
-    const row = cartList.insertRow();
-    row.insertCell().textContent = item.id;
-    row.insertCell().textContent = item.name;
-    row.insertCell().textContent = item.quantity;
+    function renderCartItem(item) {                                    // Pradedama funkcija vienai prekei atvaizduoti krepšelio lentelėje.
+    while (cartList.firstChild) {
+        cartList.removeChild(cartList.firstChild);
+    }
+    
+    const row = document.createElement('tr');
+    
+    // ID
+    let cell = document.createElement('td');
+    cell.textContent = item.id;
+    row.appendChild(cell);
+
+    // Name
+    cell = document.createElement('td');
+    cell.textContent = item.name;
+    row.appendChild(cell);
+    
+    // Quantity
+    cell = document.createElement('td');
+    cell.textContent = item.quantity;
+    row.appendChild(cell);
+    
+    cartList.appendChild(row);
 }
 
 function handleSearch(e) {
